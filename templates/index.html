@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Network Diagnostic Terminal</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #1e1e1e;
+            color: #00ff00;
+            margin: 0;
+            padding: 20px;
+        }
+        .terminal {
+            background-color: #000;
+            border: 2px solid #00ff00;
+            padding: 15px;
+            margin-top: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .terminal-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        input, select, button {
+            padding: 10px;
+            background-color: #2e2e2e;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+        }
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin: 0;
+        }
+        .copy-btn {
+            background-color: #004400;
+            color: #00ff00;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>🖥️ Network Diagnostic Terminal</h1>
+    
+    <form method="POST" class="terminal-input">
+        <input type="text" name="target" placeholder="Enter hostname/IP" 
+               value="{{ target }}" required>
+        <select name="tool" id="tool-select" onchange="toggleDigOptions()">
+            <option value="nslookup" {% if tool == 'nslookup' %}selected{% endif %}>NSLookup</option>
+            <option value="ping" {% if tool == 'ping' %}selected{% endif %}>Ping</option>
+            <option value="dig" {% if tool == 'dig' %}selected{% endif %}>Dig</option>
+        </select>
+        <select name="dig_type" id="dig-options" style="display: none;">
+            <option value="A" {% if dig_type == 'A' %}selected{% endif %}>A</option>
+            <option value="MX" {% if dig_type == 'MX' %}selected{% endif %}>MX</option>
+            <option value="NS" {% if dig_type == 'NS' %}selected{% endif %}>NS</option>
+            <option value="TXT" {% if dig_type == 'TXT' %}selected{% endif %}>TXT</option>
+            <option value="CNAME" {% if dig_type == 'CNAME' %}selected{% endif %}>CNAME</option>
+            <option value="SOA" {% if dig_type == 'SOA' %}selected{% endif %}>SOA</option>
+            <option value="PTR" {% if dig_type == 'PTR' %}selected{% endif %}>PTR</option>
+            <option value="AAAA" {% if dig_type == 'AAAA' %}selected{% endif %}>AAAA</option>
+        </select>
+        <button type="submit">Run Command</button>
+    </form>
+
+    {% if result %}
+    <div class="terminal">
+        <button class="copy-btn" onclick="copyToClipboard()">📋 Copy Output</button>
+        <pre id="terminal-output">{{ result }}</pre>
+    </div>
+    {% endif %}
+
+    <script>
+        function toggleDigOptions() {
+            const toolSelect = document.getElementById('tool-select');
+            const digOptions = document.getElementById('dig-options');
+            if (toolSelect.value === 'dig') {
+                digOptions.style.display = 'inline';
+            } else {
+                digOptions.style.display = 'none';
+            }
+        }
+
+        function copyToClipboard() {
+            const output = document.getElementById('terminal-output');
+            const textArea = document.createElement('textarea');
+            textArea.value = output.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            alert('Output copied to clipboard!');
+        }
+
+        // Initialize the dig options visibility
+        toggleDigOptions();
+    </script>
+</body>
+</html>

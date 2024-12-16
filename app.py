@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 import subprocess
+import platform
 
 app = Flask(__name__)
 
@@ -33,6 +34,15 @@ def network_tools():
                     result = subprocess.check_output(['dig', target, dig_type], 
                                                      stderr=subprocess.STDOUT,
                                                      universal_newlines=True)
+                elif tool == 'traceroute':
+                    if platform.system().lower() == "windows":
+                        result = subprocess.check_output(['tracert', target], 
+                                                         stderr=subprocess.STDOUT,
+                                                         universal_newlines=True)
+                    else:
+                        result = subprocess.check_output(['traceroute', target], 
+                                                         stderr=subprocess.STDOUT,
+                                                         universal_newlines=True)
         except subprocess.CalledProcessError as e:
             result = f"Command failed: {e.output}"
         except Exception as e:

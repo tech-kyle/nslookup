@@ -54,6 +54,7 @@
             <option value="nslookup" {% if tool == 'nslookup' %}selected{% endif %}>NSLookup</option>
             <option value="ping" {% if tool == 'ping' %}selected{% endif %}>Ping</option>
             <option value="dig" {% if tool == 'dig' %}selected{% endif %}>Dig</option>
+            <option value="traceroute" {% if tool == 'traceroute' %}selected{% endif %}>Traceroute</option>
         </select>
         <select name="dig_type" id="dig-options" style="display: none;">
             <option value="A" {% if dig_type == 'A' %}selected{% endif %}>A</option>

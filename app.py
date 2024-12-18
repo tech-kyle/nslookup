@@ -1,20 +1,24 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session
 import subprocess
 import platform
+import os
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)  # Set a secret key for session management
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     result = None
-    target = ''
-    tool = 'nslookup'
-    dig_type = 'A'
 
     if request.method == 'POST':
         target = request.form.get('target-name')
         tool = request.form.get('tool-name')
         dig_type = request.form.get('dig-type')
+
+        # Store user-specific data in the session
+        session['target'] = target
+        session['tool'] = tool
+        session['dig_type'] = dig_type
 
         # Process the command based on the tool and target
         if tool == 'nslookup':
@@ -26,7 +30,10 @@ def index():
         elif tool == 'traceroute':
             result = run_traceroute(target)
 
-    return render_template('index.html', result=result, target=target, tool=tool, dig_type=dig_type)
+        # Store the result in the session
+        session['result'] = result
+
+    return render_template('index.html', result=session.get('result'), target=session.get('target', ''), tool=session.get('tool', 'nslookup'), dig_type=session.get('dig_type', 'A'))
 
 def run_nslookup(target):
     try:

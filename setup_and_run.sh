@@ -30,4 +30,4 @@ EOL
 fi
 
 # Start the Flask application using gunicorn with increased timeout
-gunicorn --bind 0.0.0.0:8000 wsgi:app --timeout 120 --log-level debug --access-logfile - --error-logfile -
+gunicorn --bind 0.0.0.0:80 wsgi:app --timeout 120 --log-level debug --access-logfile - --error-logfile -

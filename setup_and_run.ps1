@@ -5,7 +5,15 @@ if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
     exit
 }
 
-# Update and install necessary packages
+# Install Python using Chocolatey if not already installed
+if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
+    Write-Output "Installing Chocolatey..."
+    Set-ExecutionPolicy Bypass -Scope Process -Force
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+    iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+}
+
+# Install Python using Chocolatey
 Write-Output "Updating and installing necessary packages..."
 choco install python -y
 
@@ -40,4 +48,4 @@ netsh advfirewall firewall add rule name="Allow Port 80" dir=in action=allow pro
 
 # Start the Flask application using gunicorn with increased timeout on port 80
 Write-Output "Starting the Flask application using gunicorn..."
-& .\venv\Scripts\gunicorn.exe --bind 0.0.0.0:80 wsgi:app --timeout 120 --log-level debug --access-logfile - --error-logfile -
+& .\venv\Scripts\python.exe -m gunicorn --bind 0.0.0.0:80 wsgi:app --timeout 120 --log-level debug --access-logfile - --error-logfile -

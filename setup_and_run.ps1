@@ -30,22 +30,12 @@ if (-Not (Test-Path -Path "venv")) {
 
 # Install required Python packages
 pip install --upgrade pip
-pip install flask gunicorn
-
-# Create a WSGI entry point if it doesn't exist
-if (-Not (Test-Path -Path "wsgi.py")) {
-    @"
-from app import app
-
-if __name__ == "__main__":
-    app.run()
-"@ | Out-File -FilePath "wsgi.py" -Encoding utf8
-}
+pip install flask
 
 # Allow traffic on port 80 through the firewall
 Write-Output "Allowing traffic on port 80 through the firewall..."
 netsh advfirewall firewall add rule name="Allow Port 80" dir=in action=allow protocol=TCP localport=80
 
-# Start the Flask application using gunicorn with increased timeout on port 80
-Write-Output "Starting the Flask application using gunicorn..."
-& .\venv\Scripts\python.exe -m gunicorn --bind 0.0.0.0:80 wsgi:app --timeout 120 --log-level debug --access-logfile - --error-logfile -
+# Start the Flask application directly
+Write-Output "Starting the Flask application..."
+& .\venv\Scripts\python.exe app.py

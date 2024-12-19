@@ -84,7 +84,7 @@ def run_dig(target, dig_type):
         # Sanitize input to prevent command injection
         if not target or not is_valid_target(target):
             return "Invalid input. Please use alphanumeric characters, dots, hyphens, and underscores."
-        result = subprocess.check_output(['dig', target, dig_type], stderr=subprocess.STDOUT, universal_newlines=True)
+        result = subprocess.check_output(['dig', target, dig_type], stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
         logging.debug(f"dig result: {result}")
         return result
     except subprocess.CalledProcessError as e:

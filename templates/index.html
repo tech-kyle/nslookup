@@ -99,8 +99,11 @@
 
         function showLoadingMessage() {
             const toolSelect = document.getElementById('tool-select');
+            const loadingMessage = document.getElementById('loading-message');
             if (toolSelect.value === 'ping') {
-                document.getElementById('loading-message').style.display = 'block';
+                loadingMessage.style.display = 'block';
+            } else {
+                loadingMessage.style.display = 'none';
             }
         }
 

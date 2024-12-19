@@ -10,10 +10,6 @@ app.secret_key = os.urandom(24)  # Set a secret key for session management
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 
-# Conditionally import fcntl for Unix systems
-if platform.system().lower() != "windows":
-    import fcntl
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
     result = None

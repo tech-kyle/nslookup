@@ -30,12 +30,12 @@ if (-Not (Test-Path -Path "venv")) {
 
 # Install required Python packages
 pip install --upgrade pip
-pip install flask gunicorn waitress
+pip install flask waitress
 
 # Allow traffic on port 80 through the firewall
 Write-Output "Allowing traffic on port 80 through the firewall..."
 netsh advfirewall firewall add rule name="Allow Port 80" dir=in action=allow protocol=TCP localport=80
 
-# Start the Flask application using Gunicorn with multiple workers
-Write-Output "Starting the Flask application using Gunicorn with multiple workers..."
-& .\venv\Scripts\gunicorn.exe -b 0.0.0.0:80 app:app --worker-class=gevent --workers=4
+# Start the Flask application using Waitress
+Write-Output "Starting the Flask application using Waitress..."
+& .\venv\Scripts\python.exe -m waitress --host=0.0.0.0 --port=80 app:app

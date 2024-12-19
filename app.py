@@ -35,11 +35,15 @@ def index():
 
     return render_template('index.html', result=session.get('result'), target=session.get('target', ''), tool=session.get('tool', 'nslookup'), dig_type=session.get('dig_type', 'A'))
 
+def is_valid_target(target):
+    # Allow alphanumeric characters, dots, hyphens, and underscores
+    return all(c.isalnum() or c in ('.', '-', '_') for c in target)
+
 def run_nslookup(target):
     try:
         # Sanitize input to prevent command injection
-        if not target or not target.replace('.', '').isalnum():
-            return "Invalid input. Please use alphanumeric characters and dots."
+        if not target or not is_valid_target(target):
+            return "Invalid input. Please use alphanumeric characters, dots, hyphens, and underscores."
         return subprocess.check_output(['nslookup', target], stderr=subprocess.STDOUT, universal_newlines=True)
     except subprocess.CalledProcessError as e:
         return f"Command failed: {e.output}"
@@ -49,8 +53,8 @@ def run_nslookup(target):
 def run_ping(target):
     try:
         # Sanitize input to prevent command injection
-        if not target or not target.replace('.', '').isalnum():
-            return "Invalid input. Please use alphanumeric characters and dots."
+        if not target or not is_valid_target(target):
+            return "Invalid input. Please use alphanumeric characters, dots, hyphens, and underscores."
         return subprocess.check_output(['ping', '-c', '4', target], stderr=subprocess.STDOUT, universal_newlines=True)
     except subprocess.CalledProcessError as e:
         return f"Command failed: {e.output}"
@@ -60,8 +64,8 @@ def run_ping(target):
 def run_dig(target, dig_type):
     try:
         # Sanitize input to prevent command injection
-        if not target or not target.replace('.', '').isalnum():
-            return "Invalid input. Please use alphanumeric characters and dots."
+        if not target or not is_valid_target(target):
+            return "Invalid input. Please use alphanumeric characters, dots, hyphens, and underscores."
         return subprocess.check_output(['dig', target, dig_type], stderr=subprocess.STDOUT, universal_newlines=True)
     except subprocess.CalledProcessError as e:
         return f"Command failed: {e.output}"
@@ -71,8 +75,8 @@ def run_dig(target, dig_type):
 def run_traceroute(target):
     try:
         # Sanitize input to prevent command injection
-        if not target or not target.replace('.', '').isalnum():
-            return "Invalid input. Please use alphanumeric characters and dots."
+        if not target or not is_valid_target(target):
+            return "Invalid input. Please use alphanumeric characters, dots, hyphens, and underscores."
         if platform.system().lower() == "windows":
             return subprocess.check_output(['tracert', target], stderr=subprocess.STDOUT, universal_newlines=True)
         else:
@@ -83,4 +87,4 @@ def run_traceroute(target):
         return f"An error occurred: {str(e)}"
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=80, debug=True)

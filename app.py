@@ -80,7 +80,14 @@ def run_dig(target, dig_type):
         # Sanitize input to prevent command injection
         if not target or not is_valid_target(target):
             return "Invalid input. Please use alphanumeric characters, dots, hyphens, and underscores."
-        result = subprocess.check_output(['dig', target, dig_type], stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+        
+        if platform.system().lower() == "windows":
+            # Run dig through WSL on Windows
+            result = subprocess.check_output(['wsl', 'dig', target, dig_type], stderr=subprocess.STDOUT, universal_newlines=True)
+        else:
+            # Run dig directly on Linux
+            result = subprocess.check_output(['dig', target, dig_type], stderr=subprocess.STDOUT, universal_newlines=True)
+        
         logging.debug(f"dig result: {result}")
         return result
     except subprocess.CalledProcessError as e:
@@ -106,4 +113,5 @@ def run_traceroute(target):
         return f"An error occurred: {str(e)}"
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80, debug=True)
+    from waitress import serve
+    serve(app, host='0.0.0.0', port=80, threads=4)  # Use 4 threads for handling requests

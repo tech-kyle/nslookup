@@ -61,7 +61,6 @@
             <option value="ping" {% if tool == 'ping' %}selected{% endif %}>Ping</option>
             <option value="dig" {% if tool == 'dig' %}selected{% endif %}>Dig</option>
             <option value="traceroute" {% if tool == 'traceroute' %}selected{% endif %}>Traceroute</option>
-            <option value="gunicorn" {% if tool == 'gunicorn' %}selected{% endif %}>Gunicorn</option>
         </select>
         <select name="dig-type" id="dig-options" style="display: none;">
             <option value="A" {% if dig_type == 'A' %}selected{% endif %}>A</option>

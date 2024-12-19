@@ -3,6 +3,7 @@ import subprocess
 import platform
 import os
 import logging
+import threading
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # Set a secret key for session management
@@ -101,14 +102,24 @@ def run_traceroute(target):
         # Sanitize input to prevent command injection
         if not target or not is_valid_target(target):
             return "Invalid input. Please use alphanumeric characters, dots, hyphens, and underscores."
-        if platform.system().lower() == "windows":
-            result = subprocess.check_output(['tracert', target], stderr=subprocess.STDOUT, universal_newlines=True)
-        else:
-            result = subprocess.check_output(['traceroute', target], stderr=subprocess.STDOUT, universal_newlines=True)
-        logging.debug(f"traceroute result: {result}")
-        return result
-    except subprocess.CalledProcessError as e:
-        return f"Command failed: {e.output}"
+        
+        command = ['tracert', target] if platform.system().lower() == "windows" else ['traceroute', target]
+        
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+        
+        def kill_process_after_timeout(p, timeout):
+            try:
+                p.wait(timeout=timeout)
+            except subprocess.TimeoutExpired:
+                p.kill()
+        
+        timeout_thread = threading.Thread(target=kill_process_after_timeout, args=(process, 10))
+        timeout_thread.start()
+        timeout_thread.join()
+        
+        stdout, stderr = process.communicate()
+        logging.debug(f"traceroute result: {stdout}")
+        return stdout if stdout else f"Command failed: {stderr}"
     except Exception as e:
         return f"An error occurred: {str(e)}"
 

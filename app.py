@@ -10,6 +10,10 @@ app.secret_key = os.urandom(24)  # Set a secret key for session management
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 
+# Conditionally import fcntl for Unix systems
+if platform.system().lower() != "windows":
+    import fcntl
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     result = None
@@ -63,7 +67,10 @@ def run_ping(target):
         # Sanitize input to prevent command injection
         if not target or not is_valid_target(target):
             return "Invalid input. Please use alphanumeric characters, dots, hyphens, and underscores."
-        result = subprocess.check_output(['ping', '-c', '4', target], stderr=subprocess.STDOUT, universal_newlines=True)
+        if platform.system().lower() == "windows":
+            result = subprocess.check_output(['ping', target], stderr=subprocess.STDOUT, universal_newlines=True)
+        else:
+            result = subprocess.check_output(['ping', '-c', '4', target], stderr=subprocess.STDOUT, universal_newlines=True)
         logging.debug(f"ping result: {result}")
         return result
     except subprocess.CalledProcessError as e:

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Network Diagnostic Terminal</title>
     <style>
         body {
@@ -42,12 +43,17 @@
             padding: 10px;
             cursor: pointer;
         }
+        .loading-message {
+            display: none;
+            color: red;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <h1>🖥️ Network Diagnostic Terminal</h1>
     
-    <form method="POST" class="terminal-input">
+    <form method="POST" class="terminal-input" onsubmit="showLoadingMessage()">
         <input type="text" name="target-name" placeholder="Enter hostname/IP" 
                value="{{ target }}" required>
         <select name="tool-name" id="tool-select" onchange="toggleDigOptions()">
@@ -69,6 +75,10 @@
         <button type="submit">Run Command</button>
     </form>
 
+    <div class="loading-message" id="loading-message">
+        Please wait for the command to finish...
+    </div>
+
     {% if result %}
     <div class="terminal">
         <button class="copy-btn" onclick="copyToClipboard()">📋 Copy Output</button>
@@ -84,6 +94,13 @@
                 digOptions.style.display = 'inline';
             } else {
                 digOptions.style.display = 'none';
+            }
+        }
+
+        function showLoadingMessage() {
+            const toolSelect = document.getElementById('tool-select');
+            if (toolSelect.value === 'ping') {
+                document.getElementById('loading-message').style.display = 'block';
             }
         }
 

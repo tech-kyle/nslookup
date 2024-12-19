@@ -24,5 +24,5 @@ if __name__ == "__main__":
     app.run()
 EOL
 
-# Start the Flask application using gunicorn
-gunicorn --bind 0.0.0.0:80 wsgi:app
+# Start the Flask application using gunicorn with increased timeout
+sudo gunicorn --bind 0.0.0.0:8000 wsgi:app --timeout 120 --log-level debug --access-logfile - --error-logfile -

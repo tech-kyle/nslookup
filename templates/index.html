@@ -101,7 +101,7 @@
         function showLoadingMessage() {
             const toolSelect = document.getElementById('tool-select');
             const loadingMessage = document.getElementById('loading-message');
-            if (toolSelect.value === 'ping') {
+            if (toolSelect.value === 'ping' || toolSelect.value === 'traceroute') {
                 loadingMessage.style.display = 'block';
             } else {
                 loadingMessage.style.display = 'none';

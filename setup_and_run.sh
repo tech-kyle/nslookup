@@ -19,6 +19,8 @@ source venv/bin/activate
 # Install required Python packages
 pip install --upgrade pip
 pip install -r requirements.txt # Ensure Flask, gunicorn/waitress are in requirements.txt
+pip install waitress
+pip install gunicorn
 
 # Create a WSGI entry point if it doesn't exist (if using gunicorn)
 if [ ! -f "wsgi.py" ]; then

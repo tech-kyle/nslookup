@@ -33,9 +33,10 @@ pip install --upgrade pip
 pip install flask waitress
 
 # Allow traffic on port 80 through the firewall
-Write-Output "Allowing traffic on port 80 through the firewall..."
-netsh advfirewall firewall add rule name="Allow Port 80" dir=in action=allow protocol=TCP localport=80
+Write-Output "Allowing traffic on port 8080 through the firewall..."
+netsh advfirewall firewall add rule name="Allow Port 8080" dir=in action=allow protocol=TCP localport=8080
 
 # Start the Flask application using Waitress
 Write-Output "Starting the Flask application using Waitress..."
-& .\venv\Scripts\python.exe -m waitress --host=0.0.0.0 --port=80 app:app
+#& .\venv\Scripts\python.exe -m waitress --host=0.0.0.0 --port=80 app:app
+& .\venv\Scripts\python.exe -m waitress --host=0.0.0.0 --port=8080 app:app

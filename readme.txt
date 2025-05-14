@@ -29,4 +29,4 @@ To run the server that provides a web interface for `nslookup`, `dig`, and `ping
     ```
 
 3. **Access the Web Interface:**
-    Open your web browser and go to `http://localhost:5000`. You will be able to perform `nslookup`, `dig`, and `ping` commands through the web interface.
+    Open your web browser and go to `http://localhost:8080`. You will be able to perform `nslookup`, `dig`, and `ping` commands through the web interface.

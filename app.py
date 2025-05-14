@@ -123,6 +123,10 @@ def run_traceroute(target):
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
+# if __name__ == '__main__': 
+#     from waitress import serve
+#     serve(app, host='0.0.0.0', port=80, threads=4) #requries 
+
 if __name__ == '__main__':
     from waitress import serve
-    serve(app, host='0.0.0.0', port=80, threads=4)  # Use 4 threads for handling requests
+    serve(app, host='0.0.0.0', port=8080, threads=4) # Use a non-privileged port like 8080

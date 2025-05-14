@@ -1,24 +1,11 @@
-# Ensure script is run as Administrator
-if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
-{
-    Write-Warning "You do not have Administrator rights to run this script!`nPlease re-run this script as an Administrator."
-    exit
-}
+PowerShell
+# User should ensure Python is installed and available in their PATH.
+# This script assumes Python (with pip and venv) is user-accessible.
 
-# Install Python using Chocolatey if not already installed
-if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
-    Write-Output "Installing Chocolatey..."
-    Set-ExecutionPolicy Bypass -Scope Process -Force
-    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-    iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-}
-
-# Install Python using Chocolatey
-Write-Output "Updating and installing necessary packages..."
-choco install python -y
-
-# Navigate to the project directory
-Set-Location -Path "C:\nslookup"
+# Navigate to the project directory (assuming script is run from project root or a user-writable path)
+# Set-Location -Path "C:\nslookup\nslookup_app"
+# Or, if running from within the directory:
+# Set-Location -Path $PSScriptRoot # If script is inside the project dir
 
 # Create a virtual environment if it doesn't exist
 if (-Not (Test-Path -Path "venv")) {
@@ -30,12 +17,8 @@ if (-Not (Test-Path -Path "venv")) {
 
 # Install required Python packages
 pip install --upgrade pip
-pip install flask waitress
+pip install -r requirements.txt # Ensure Flask, waitress are in requirements.txt
 
-# Allow traffic on port 80 through the firewall
-Write-Output "Allowing traffic on port 80 through the firewall..."
-netsh advfirewall firewall add rule name="Allow Port 80" dir=in action=allow protocol=TCP localport=80
-
-# Start the Flask application using Waitress
-Write-Output "Starting the Flask application using Waitress..."
-& .\venv\Scripts\python.exe -m waitress --host=0.0.0.0 --port=80 app:app
+# Start the Flask application using Waitress on a non-privileged port
+Write-Output "Starting the Flask application using Waitress on port 8080..."
+& .\venv\Scripts\python.exe -m waitress --host=0.0.0.0 --port=8080 app:app
